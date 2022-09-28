@@ -12,7 +12,7 @@ DIFF = 0
 
 def init():
 	global M, SW
-	M = random.random()
+	M = random.uniform(-3, 3)
 	SW = 1
 
 
