@@ -1,3 +1,8 @@
+"""
+Autoren: Erik Nissen, Nico Johnsen
+Datum: 29.09.2022
+"""
+
 import csv, matplotlib, random, matplotlib.pyplot as plt
 from tabulate import tabulate
 
