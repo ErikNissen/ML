@@ -23,6 +23,8 @@ def main():
 	global SUM_Q_Fehler, SUM_Q_Fehler_alt, DIFF, M, SW
 	init()
 	coords = []
+	ai_coords = []
+	counter = 0
 	data = open('data.csv', newline='')
 	reader = csv.reader(data)
 	for row in reader:
@@ -32,31 +34,26 @@ def main():
 		coords.append((float(row[0]), float(row[1])))
 	data.close()
 	while True:
-		
-		ai_coords = []
-		for coord in coords:
-			ai_coords.append((coord[0], coord[0] * M))
-			DIFF.append(coord[1] - (coord[0] * M))
-			Q_Fehler.append(DIFF[-1] ** 2)
-			SUM_Q_Fehler += Q_Fehler[-1]
-		print('M: ', M)
-		print('SW: ', SW)
-		print('Q_Fehler: ', SUM_Q_Fehler)
-		if SUM_Q_Fehler_alt == 0:
-			pass
+		for x, y in coords:
+			ai_coord = (x, x * M)
+			ai_coords.append(ai_coord)
+			fehler = (x * M) - y
+			Q_Fehler.append(fehler**2)
+		SUM_Q_Fehler = sum(Q_Fehler)
+		Q_Fehler.clear()
+		if counter == 0:
+			print('M: ', M, 'SW: ', SW, 'SUM_Q_Fehler: ', SUM_Q_Fehler)
+			counter += 1
 		else:
-			if SUM_Q_Fehler_alt - SUM_Q_Fehler < 0:
+			diff = SUM_Q_Fehler_alt - SUM_Q_Fehler
+			if diff < 0:
 				SW *= -0.5
-				SUM_Q_Fehler_alt = SUM_Q_Fehler
-			elif SUM_Q_Fehler_alt - SUM_Q_Fehler <= Genauigkeit:
-				print(f"""
-				Ergebnis:
-					M: {M}
-					Q_Fehler: {SUM_Q_Fehler}
-				""")
+			elif diff <= Genauigkeit:
+				print("Fertig\n")
+				print('M: ', M, 'SW: ', SW, 'SUM_Q_Fehler: ', SUM_Q_Fehler)
 				break
-			else:
-				SUM_Q_Fehler_alt = SUM_Q_Fehler
+			print('M: ', M, 'SW: ', SW, 'SUM_Q_Fehler: ', SUM_Q_Fehler, 'DIFF: ', diff)
+		SUM_Q_Fehler_alt = SUM_Q_Fehler
 		M += SW
 				
 		
@@ -66,6 +63,8 @@ def main():
 		plt.plot([x for x, y in coords], [y for x, y in coords], 'bo')
 		plt.plot([x for x, y in ai_coords], [y for x, y in ai_coords], 'g-')
 		plt.plot([x for x, y in ai_coords], [y for x, y in ai_coords], 'go')
+		
+		ai_coords.clear()
 	
 		# create legend
 		blue_line = matplotlib.lines.Line2D([0], [0], color='blue', marker='o', linestyle='')
