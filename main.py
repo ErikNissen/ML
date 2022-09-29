@@ -1,10 +1,7 @@
-import csv, matplotlib, random
-import os
-
+import csv, matplotlib, random, matplotlib.pyplot as plt
 from tabulate import tabulate
 
 matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
 
 M = 0
 SW = 0
@@ -13,6 +10,7 @@ Q_Fehler = []
 SUM_Q_Fehler = 0
 SUM_Q_Fehler_alt = 0
 DIFF = []
+PAUSE_BETWEEN_PLOTS = 0.125
 
 
 def init():
@@ -52,17 +50,17 @@ def main():
 			elif diff <= Genauigkeit:
 				print("Fertig\n")
 				print(
-					"m: {0:.3f}\nQ-Fehler: {1:.3f}\nDIFF: {2:.3f}\nIterationen: {3}".format(
-						M, SUM_Q_Fehler, diff, counter
-						)
-					)
-				break
-			print(
-				tabulate(
-						[[M, SW, SUM_Q_Fehler, diff]], headers=['m', 'Schrittweite', 'Q-Fehler', 'DIFF'],
-						tablefmt='grid', floatfmt=".3f"
+						"m: {0:.3f}\nQ-Fehler: {1:.3f}\nDIFF: {2:.3f}\nIterationen: {3}".format(
+								M, SUM_Q_Fehler, diff, counter
 						)
 				)
+				break
+			print(
+					tabulate(
+							[[counter, M, SW, SUM_Q_Fehler, diff]], headers=['Iteration', 'm', 'Schrittweite', 'Q-Fehler', 'DIFF'],
+							tablefmt='grid', floatfmt=".3f"
+					)
+			)
 		SUM_Q_Fehler_alt = SUM_Q_Fehler
 		M += SW
 
@@ -81,7 +79,7 @@ def main():
 
 		# show plot for 1 second
 		plt.show(block=False)
-		plt.pause(0.125)
+		plt.pause(PAUSE_BETWEEN_PLOTS)
 		plt.clf()
 		counter += 1
 
