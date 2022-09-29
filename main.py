@@ -1,4 +1,4 @@
-import math, csv, matplotlib, random
+import csv, matplotlib, random
 import os
 
 from tabulate import tabulate
@@ -36,12 +36,11 @@ def main():
 		coords.append((float(row[0]), float(row[1])))
 	data.close()
 	while True:
-		os.system('cls' if os.name == 'nt' else 'clear')
 		for x, y in coords:
 			ai_coord = (x, x * M)
 			ai_coords.append(ai_coord)
 			fehler = (x * M) - y
-			Q_Fehler.append(fehler**2)
+			Q_Fehler.append(fehler ** 2)
 		SUM_Q_Fehler = sum(Q_Fehler)
 		Q_Fehler.clear()
 		if counter == 1:
@@ -52,27 +51,34 @@ def main():
 				SW *= -0.5
 			elif diff <= Genauigkeit:
 				print("Fertig\n")
-				print("m: {0:.3f}\nQ-Fehler: {1:.3f}\nDIFF: {2:.3f}\nIterationen: {3}".format(M, SUM_Q_Fehler, diff, counter))
+				print(
+					"m: {0:.3f}\nQ-Fehler: {1:.3f}\nDIFF: {2:.3f}\nIterationen: {3}".format(
+						M, SUM_Q_Fehler, diff, counter
+						)
+					)
 				break
-			print(tabulate([[M, SW, SUM_Q_Fehler, diff]], headers=['m', 'Schrittweite', 'Q-Fehler', 'DIFF'], tablefmt='grid', floatfmt=".3f"))
+			print(
+				tabulate(
+						[[M, SW, SUM_Q_Fehler, diff]], headers=['m', 'Schrittweite', 'Q-Fehler', 'DIFF'],
+						tablefmt='grid', floatfmt=".3f"
+						)
+				)
 		SUM_Q_Fehler_alt = SUM_Q_Fehler
 		M += SW
-				
-		
-	
+
 		# plot the data
 		plt.plot([x for x, y in coords], [y for x, y in coords], 'b-')
 		plt.plot([x for x, y in coords], [y for x, y in coords], 'bo')
 		plt.plot([x for x, y in ai_coords], [y for x, y in ai_coords], 'g-')
 		plt.plot([x for x, y in ai_coords], [y for x, y in ai_coords], 'go')
-		
+
 		ai_coords.clear()
-	
+
 		# create legend
 		blue_line = matplotlib.lines.Line2D([0], [0], color='blue', marker='o', linestyle='')
 		green_line = matplotlib.lines.Line2D([0], [0], color='green', marker='o', linestyle='')
 		plt.legend((blue_line, green_line), ('AI', 'Data'), loc='upper left')
-	
+
 		# show plot for 1 second
 		plt.show(block=False)
 		plt.pause(0.125)
