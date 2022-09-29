@@ -1,5 +1,7 @@
 import math, csv, matplotlib, random
-import time
+import os
+
+from tabulate import tabulate
 
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
@@ -24,7 +26,7 @@ def main():
 	init()
 	coords = []
 	ai_coords = []
-	counter = 0
+	counter = 1
 	data = open('data.csv', newline='')
 	reader = csv.reader(data)
 	for row in reader:
@@ -34,6 +36,7 @@ def main():
 		coords.append((float(row[0]), float(row[1])))
 	data.close()
 	while True:
+		os.system('cls' if os.name == 'nt' else 'clear')
 		for x, y in coords:
 			ai_coord = (x, x * M)
 			ai_coords.append(ai_coord)
@@ -41,18 +44,17 @@ def main():
 			Q_Fehler.append(fehler**2)
 		SUM_Q_Fehler = sum(Q_Fehler)
 		Q_Fehler.clear()
-		if counter == 0:
-			print('M: ', M, 'SW: ', SW, 'SUM_Q_Fehler: ', SUM_Q_Fehler)
-			counter += 1
+		if counter == 1:
+			print(tabulate([[M, SW, SUM_Q_Fehler]], tablefmt='grid', headers=['m', 'Schrittweite', 'Q-Fehler']))
 		else:
 			diff = SUM_Q_Fehler_alt - SUM_Q_Fehler
 			if diff < 0:
 				SW *= -0.5
 			elif diff <= Genauigkeit:
 				print("Fertig\n")
-				print('M: ', M, 'SW: ', SW, 'SUM_Q_Fehler: ', SUM_Q_Fehler)
+				print("m: {0:.3f}\nQ-Fehler: {1:.3f}\nDIFF: {2:.3f}\nIterationen: {3}".format(M, SUM_Q_Fehler, diff, counter))
 				break
-			print('M: ', M, 'SW: ', SW, 'SUM_Q_Fehler: ', SUM_Q_Fehler, 'DIFF: ', diff)
+			print(tabulate([[M, SW, SUM_Q_Fehler, diff]], headers=['m', 'Schrittweite', 'Q-Fehler', 'DIFF'], tablefmt='grid', floatfmt=".3f"))
 		SUM_Q_Fehler_alt = SUM_Q_Fehler
 		M += SW
 				
@@ -69,12 +71,13 @@ def main():
 		# create legend
 		blue_line = matplotlib.lines.Line2D([0], [0], color='blue', marker='o', linestyle='')
 		green_line = matplotlib.lines.Line2D([0], [0], color='green', marker='o', linestyle='')
-		plt.legend((blue_line, green_line), ('Data', 'AI'), loc='upper left')
+		plt.legend((blue_line, green_line), ('AI', 'Data'), loc='upper left')
 	
 		# show plot for 1 second
 		plt.show(block=False)
-		plt.pause(1)
+		plt.pause(0.125)
 		plt.clf()
+		counter += 1
 
 
 if __name__ == '__main__':
