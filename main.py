@@ -19,10 +19,6 @@ def init():
 	SW = 5
 
 
-def clear_plot():
-	plt.clf()
-
-
 def main():
 	global SUM_Q_Fehler, SUM_Q_Fehler_alt, DIFF, M, SW
 	init()
@@ -38,7 +34,6 @@ def main():
 	while True:
 		
 		ai_coords = []
-		sum_q_fehler = 0
 		for coord in coords:
 			ai_coords.append((coord[0], coord[0] * M))
 			DIFF.append(coord[1] - (coord[0] * M))
@@ -46,12 +41,13 @@ def main():
 			SUM_Q_Fehler += Q_Fehler[-1]
 		print('M: ', M)
 		print('SW: ', SW)
-		print('Q_Fehler: ', sum_q_fehler)
+		print('Q_Fehler: ', SUM_Q_Fehler)
 		if SUM_Q_Fehler_alt == 0:
-			SUM_Q_Fehler_alt = SUM_Q_Fehler
+			pass
 		else:
 			if SUM_Q_Fehler_alt - SUM_Q_Fehler < 0:
 				SW *= -0.5
+				SUM_Q_Fehler_alt = SUM_Q_Fehler
 			elif SUM_Q_Fehler_alt - SUM_Q_Fehler <= Genauigkeit:
 				print(f"""
 				Ergebnis:
@@ -59,7 +55,9 @@ def main():
 					Q_Fehler: {SUM_Q_Fehler}
 				""")
 				break
-			M += SW
+			else:
+				SUM_Q_Fehler_alt = SUM_Q_Fehler
+		M += SW
 				
 		
 	
